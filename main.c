@@ -7,7 +7,8 @@
 #include <signal.h>
 #include <time.h>
 
-#define JOY_DEV "/dev/input/js0"
+#define JOY_DEV0 "/dev/input/js0"
+#define JOY_DEV1 "/dev/input/js1"
 #define CLOCKID CLOCK_REALTIME
 #define SIG SIGUSR1
 
@@ -38,11 +39,16 @@ int main()
 	char *button=NULL, name_of_joystick[80];
 	struct js_event js;
 
-	if( ( joy_fd = open( JOY_DEV , O_RDONLY)) == -1 )
+	if( ( joy_fd = open( JOY_DEV0 , O_RDONLY)) == -1 )
 	{
-		fprintf(stderr, "Couldn't open joystick: ");
-		fprintf(stderr, JOY_DEV"\n");
-		return -1;
+		fprintf(stderr, "Couldn't open joystick 0: ");
+		fprintf(stderr, JOY_DEV0"\n");
+		if ( (joy_fd = open( JOY_DEV1 , O_RDONLY)) == -1)
+		{
+			fprintf(stderr, "Couldn't open joystick 1: ");
+			fprintf(stderr, JOY_DEV1"/n");
+			return(-1);
+		}
 	}
 
 	ioctl( joy_fd, JSIOCGAXES, &num_of_axis );
